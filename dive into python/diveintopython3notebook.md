@@ -51,3 +51,11 @@ remove() will raise KeyError, if value wanted to be deleted is not existed
 
 ## Comprehension
 
+### List / Dictionary / Set
+* You can use any Python expression in a list comprehension, including the functions in the os module for manipulating files and directories.
+	* [i**2 for i in range(23)]
+	* with os, glob for file manipulations [(os.stat(f).st_size, os.path.realpath(f)) for f in glob.glob('*.xml')]
+
+
+
+
