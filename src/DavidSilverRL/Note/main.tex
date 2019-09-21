@@ -1,0 +1,135 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Wenneker Article
+% LaTeX Template
+% Version 2.0 (28/2/17)
+%
+% This template was downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Authors:
+% Vel (vel@LaTeXTemplates.com)
+% Frits Wenneker
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[10pt, a4paper, twocolumn]{article} % 10pt font size (11 and 12 also possible), A4 paper (letterpaper for US letter) and two column layout (remove for one column)
+
+\input{structure.tex} % Specifies the document structure and loads requires packages
+
+%----------------------------------------------------------------------------------------
+%	ARTICLE INFORMATION
+%----------------------------------------------------------------------------------------
+
+\title{Reinforcement Learning \\ Markov Decision Process Notes} % The article title
+
+\author{
+	\authorstyle{Lu Hong \textsuperscript{1}}
+	\newline\newline % Space before institutions
+	\textsuperscript{1}\institution{Nanjing University of Aeronautics and Astronautics}\\ % Institution 1
+}
+
+% Example of a one line author/institution relationship
+%\author{\newauthor{John Marston} \newinstitution{Universidad Nacional Autónoma de México, Mexico City, Mexico}}
+
+\date{\today} % Add a date here if you would like one to appear underneath the title block, use \today for the current date, leave empty for no date
+
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+\maketitle % Print the title
+
+\thispagestyle{firstpage} % Apply the page style for the first page (no headers and footers)
+
+%----------------------------------------------------------------------------------------
+%	ABSTRACT
+%----------------------------------------------------------------------------------------
+
+% \lettrineabstract{Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce maximus nisi ligula. Morbi laoreet ex ligula, vitae lobortis purus mattis vel. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec ac metus ut turpis mollis placerat et nec enim. Duis tristique nibh maximus faucibus facilisis. Praesent in consequat leo. Maecenas condimentum ex rhoncus, elementum diam vel, malesuada ante.}
+
+%----------------------------------------------------------------------------------------
+%	ARTICLE CONTENTS
+%----------------------------------------------------------------------------------------
+
+%------------------------------------------------
+% markov process
+
+\section{Markov Process}
+"The future is independent of the past given the present". A state $S_{t}$ is \textsl{Markov} iif.  $$ \textrm{P} [S_{t+1} | S_{t} ] = \textrm{P} [ S_{t+1} | S_{1}, S_{2}, ..., S_{t} ] $$
+
+Markov Process (or Markov Chain) is a \textit{memoryless random process}, represented by a tuple $<S,P>$
+
+%------------------------------------------------
+% markov reward process
+
+\section{Markov Reward Process}
+Markov Reward Process is Markov Process with values, represented by a tuple $<S,P,R,\gamma>$, where $R = \textrm{E}[R_{t+1} | S_{t} = s]$  and $\gamma$ is a discount factor.
+
+Return $G_{t}$ is the \textsl{total discounted reward} at time-step $t$ presented by $$G_{t} = \sum_{i = 0}^{\infty} R_{t+i+1}$$
+
+Also, we define Value Function to indicate the long-term value of the state s. $$ V(s) = \textrm{E} [G_{t} | S = s] $$
+
+* Bellman Equation for MRPs, it demonstrate that MRPs can be presented in recursive format.
+
+
+\begin{equation*}
+	\begin{aligned}
+		\displaystyle
+		v(s) &= \textrm{E} [G_{t} | S_{t} = s] \\
+		&= \textrm{E} [R_{t+1} + \gamma R_{t+2} + \gamma^{2} R_{t+3} + ... | S_{t} = s] \\
+		&= \textrm{E} [R_{t+1} + \gamma (R_{t+2} + \gamma R_{t+3} + ...) | S_{t} = s] \\
+		&= \textrm{E} [R_{t+1} + \gamma G_{t+1} | S_{t} = s]\\ 
+		&= \textrm{E} [R_{t+1} + \gamma v(S_{t+1}) | S_{t} = s]
+	\end{aligned}
+\end{equation*}
+
+\begin{figure}
+	\begin{centering}
+		\includegraphics[width = \linewidth]{bellman.jpg}
+	\end{centering}
+\end{figure}
+
+To express Bellman Equation in matrix form as $$v = R + \gamma P v,$$ we can solve Bellman Equation easily as linear equation.
+
+\begin{equation*}
+	\begin{aligned}[l]
+		v &= R + \gamma P v \\
+		(I - \gamma P)v &= R \\
+		v &= (I - \gamma P)^{-1}R
+	\end{aligned}•	
+\end{equation*}•
+
+%------------------------------------------------
+% markov Decision process
+\section{Markov Decision Process}
+A MDP is a MRP with decisions, represented by a tuple $<S, A, P, R ,\gamma>$, to be specific, some params have been changed after actions added.
+$P_{ss'}^a = \textrm{P}[S_{t+1} = s' | S_{t} = s, A_{t} = a]$ and $R^{a}_{s} = \textrm{E}[R_{t+1} | S_{t} = s, A_{t} = a]$
+
+*Policies: A policy $\pi$ is a distribution over actions given states, 
+$$\pi(a|s) = \textrm{P}[A_{t} = a | S_{t} = s]$$
+
+\begin{figure}
+	\begin{centering}
+		\includegraphics[width = \linewidth]{policy.jpg}
+	\end{centering}
+\end{figure}
+
+%------------------------------------------------
+
+
+%----------------------------------------------------------------------------------------
+%	BIBLIOGRAPHY
+%----------------------------------------------------------------------------------------
+
+\printbibliography[title={Bibliography}] % Print the bibliography, section title in curly brackets
+
+%----------------------------------------------------------------------------------------
+
+\end{document}
