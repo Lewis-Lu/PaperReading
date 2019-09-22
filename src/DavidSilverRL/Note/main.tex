@@ -62,19 +62,27 @@
 % markov process
 
 \section{Markov Process}
-"The future is independent of the past given the present". A state $S_{t}$ is \textsl{Markov} iif.  $$ \textrm{P} [S_{t+1} | S_{t} ] = \textrm{P} [ S_{t+1} | S_{1}, S_{2}, ..., S_{t} ] $$
-
+"The future is independent of the past given the present". A state $S_{t}$ is \textsl{Markov} iif.  $$ \Bbb{P} [S_{t+1} | S_{t} ] = \Bbb{P} [ S_{t+1} | S_{1}, S_{2}, ..., S_{t} ] $$
+This requires environment to be fully observed.
 Markov Process (or Markov Chain) is a \textit{memoryless random process}, represented by a tuple $<S,P>$
+
+\subsection{Markov Chain}
+\textsl{suppliment from WangCai's Note}
+
+Let $s_{t} \in S$, and if $S$ is countable, we call the Markov Process with this countable state space Markov Chain.
+
 
 %------------------------------------------------
 % markov reward process
 
 \section{Markov Reward Process}
-Markov Reward Process is Markov Process with values, represented by a tuple $<S,P,R,\gamma>$, where $R = \textrm{E}[R_{t+1} | S_{t} = s]$  and $\gamma$ is a discount factor.
+Markov Reward Process is Markov Process with values, represented by a tuple $<S,P,R,\gamma>$, where $R = \Bbb{E}[R_{t+1} | S_{t} = s]$  and $\gamma$ is a discount factor.
 
-Return $G_{t}$ is the \textsl{total discounted reward} at time-step $t$ presented by $$G_{t} = \sum_{i = 0}^{\infty} R_{t+i+1}$$
+Return $G_{t}$ is the \textsl{total discounted reward} at time-step $t$ presented by $$G_{t} = \sum_{i = 0}^{\infty} \gamma^{i} R_{t+i+1}$$
 
-Also, we define Value Function to indicate the long-term value of the state s. $$ V(s) = \textrm{E} [G_{t} | S = s] $$
+Also, we define Value Function to indicate the long-term value of the state s. $$ V(s) = \Bbb{E} [G_{t} | S = s] $$
+
+\subsection{Bellman Equation}
 
 * Bellman Equation for MRPs, it demonstrate that MRPs can be presented in recursive format.
 
@@ -82,11 +90,11 @@ Also, we define Value Function to indicate the long-term value of the state s. $
 \begin{equation*}
 	\begin{aligned}
 		\displaystyle
-		v(s) &= \textrm{E} [G_{t} | S_{t} = s] \\
-		&= \textrm{E} [R_{t+1} + \gamma R_{t+2} + \gamma^{2} R_{t+3} + ... | S_{t} = s] \\
-		&= \textrm{E} [R_{t+1} + \gamma (R_{t+2} + \gamma R_{t+3} + ...) | S_{t} = s] \\
-		&= \textrm{E} [R_{t+1} + \gamma G_{t+1} | S_{t} = s]\\ 
-		&= \textrm{E} [R_{t+1} + \gamma v(S_{t+1}) | S_{t} = s]
+		v(s) &= \Bbb{E} [G_{t} | S_{t} = s] \\
+		&= \Bbb{E} [R_{t+1} + \gamma R_{t+2} + \gamma^{2} R_{t+3} + ... | S_{t} = s] \\
+		&= \Bbb{E} [R_{t+1} + \gamma (R_{t+2} + \gamma R_{t+3} + ...) | S_{t} = s] \\
+		&= \Bbb{E} [R_{t+1} + \gamma G_{t+1} | S_{t} = s]\\ 
+		&= \Bbb{E} [R_{t+1} + \gamma v(S_{t+1}) | S_{t} = s]
 	\end{aligned}
 \end{equation*}
 
@@ -108,27 +116,297 @@ To express Bellman Equation in matrix form as $$v = R + \gamma P v,$$ we can sol
 
 %------------------------------------------------
 % markov Decision process
+
 \section{Markov Decision Process}
-A MDP is a MRP with decisions, represented by a tuple $<S, A, P, R ,\gamma>$, to be specific, some params have been changed after actions added.
-$P_{ss'}^a = \textrm{P}[S_{t+1} = s' | S_{t} = s, A_{t} = a]$ and $R^{a}_{s} = \textrm{E}[R_{t+1} | S_{t} = s, A_{t} = a]$
+A MDP is a MRP with decisions, represented by a tuple $<S, A, P, R ,\gamma>$, 
+to be specific, some params have been changed after action is introduced. 
+$$P_{ss'}^a = \Bbb{P}[S_{t+1} = s' | S_{t} = s, A_{t} = a]$$ 
+$$R^{a}_{s} = \Bbb{E}[R_{t+1} | S_{t} = s, A_{t} = a]$$
 
-*Policies: A policy $\pi$ is a distribution over actions given states, 
-$$\pi(a|s) = \textrm{P}[A_{t} = a | S_{t} = s]$$
+\subsection{Policies}
 
-\begin{figure}
+Policies: A policy $\pi$ is a distribution over actions given states, 
+$$\pi(a|s) = \Bbb{P}[A_{t} = a | S_{t} = s]$$
+
+\begin{itemize}
+\item{A policy fully characterizes the agent's behaviour}
+\item{Policy is what we want in RL problem}
+\item{Policy is only asscoiated with current state}
+\item{Policy is static if it's certain}
+\item{Agent can update policy during the time}
+\item{If $\pi$ is one-hot, then policy is certain}
+
+\end{itemize}
+
+\begin{figure}[h]
 	\begin{centering}
 		\includegraphics[width = \linewidth]{policy.jpg}
 	\end{centering}
 \end{figure}
 
-%------------------------------------------------
+After we introduce Policy, we should reinvent the value function.
+the state-value funcion is:
+$$v_{\pi}(s) = \Bbb{E}_{\pi}[G_{t} | S_{t} = s] $$
+the action-value function is:
+$$q_{\pi}(s, a) = \Bbb{E}_{\pi}[G_{t} | S_{t} = s, A_{t} = a] $$
 
+\subsection{Bellman Expectation Equation}
+
+\begin{figure}[H]
+	\begin{centering}
+		\includegraphics[width = \linewidth]{bellmanEE.jpg}
+	\end{centering}
+\end{figure}
+
+\begin{figure}[H]
+	\begin{centering}
+		\includegraphics[width = \linewidth]{bellmanV.jpg}
+	\end{centering}
+\end{figure}
+
+For each action nod, q-value is generated the same way.
+\begin{figure}[H]
+	\begin{centering}
+		\includegraphics[width = \linewidth]{bellmanQ.jpg}
+	\end{centering}
+\end{figure}
+
+Two process combined in various order, we can get Bellman Expectation Equation for $v_{\pi}$ and $q_{\pi}$
+
+\begin{figure}[H]
+	\begin{centering}
+		\includegraphics[width = \linewidth]{bellmanVpi.jpg}
+	\end{centering}
+\end{figure}
+
+\begin{figure}[H]
+	\begin{centering}
+		\includegraphics[width = \linewidth]{bellmanQpi.jpg}
+	\end{centering}
+\end{figure}
+
+\subsection{Optimal Value Function}
+
+\subsubsection{Definition}
+The optimal state-value function $v_{*}(s)$ is the maximum value function over all policies
+$$v_{*}(s) = \underset{\pi}\max \; v_{\pi}(s)$$
+
+The optimal action-value function $q_{*}(s,a)$ is the maximum action-value function over all policies
+$$ q_{*}(s,a) = \underset{\pi}\max \; q_{\pi}(s,a) $$
+
+\subsubsection{Optimal Policy}
+\begin{figure}[H]
+	\begin{centering}
+		\includegraphics[width = \linewidth]{OptPolicy.jpg}
+	\end{centering}
+\end{figure}
+
+\subsubsection{Find Optimal Policy}
+\begin{figure}[H]
+	\begin{centering}
+		\includegraphics[width = \linewidth]{findopt.jpg}
+	\end{centering}
+\end{figure}
+
+\subsection{Bellman Optimality Equation}
+
+\begin{figure}[H]
+	\begin{centering}
+		\includegraphics[width = \linewidth]{bellmanOptV.jpg}
+	\end{centering}
+\end{figure}
+
+\begin{figure}[H]
+	\begin{centering}
+		\includegraphics[width = \linewidth]{bellmanOptQ.jpg}
+	\end{centering}
+\end{figure}
+
+\begin{figure}[H]
+	\begin{centering}
+		\includegraphics[width = \linewidth]{bellmanOptV2.jpg}
+	\end{centering}
+\end{figure}
+
+\begin{figure}[H]
+	\begin{centering}
+		\includegraphics[width = \linewidth]{bellmanOptQ2.jpg}
+	\end{centering}
+\end{figure}
+
+%------------------------------------------------
+\section{Example Demonstration}
+I import example from \citep{reference2} and explanation from \citep{reference1}, accompanied with my personal perspective to finish this part.
+
+\subsection{MRP Example}
+Given the following Markov Reward Process
+\begin{figure}[H]
+	\begin{centering}
+		\includegraphics[width = \linewidth]{MRP.jpg}
+	\end{centering}
+\end{figure},
+We can extract this process into a matrix:
+\begin{align*}
+	\begin{bmatrix}
+		\begin{smallmatrix}
+		\textbf{Reward} 	 & -1				& -2		 & -2			& -2 		 & 10		& 1		& 0\\
+		\textbf{State}  	 & FaceBook	& Class1 & Class2 & Class3 & Pass & Pub & Sleep\\
+		FaceBook & 0.9			& 0.1		 & 				&				 &			&			& \\
+		Class1   & 0.5			&  			 & 0.5		&				 &			&			& \\
+		Class2	 & 					& 			 & 				&	0.8		 &			&			& 0.2\\
+		Class3	 & 					& 		 	 & 				&				 & 0.6	&	0.4	& \\
+		Pass	   & 					& 		 	 & 				&				 &			&			& 1\\
+		Pub			 & 					& 0.2	 	 & 0.4		&	0.4		 & 			&			& \\
+		Sleep		 & 					& 		 	 & 				&				 &			&			& 1\\
+		\end{smallmatrix}	
+	\end{bmatrix}
+\end{align*}
+
+where 
+\begin{align*}
+	\cal{S} = 
+	\begin{bmatrix}
+		\begin{smallmatrix}
+			FaceBook \\
+			Class1 \\
+			Class2 \\
+			Class3 \\
+			Pass\\
+			Pub\\
+			Sleep
+		\end{smallmatrix}
+	\end{bmatrix},
+\end{align*}
+
+\begin{align*}
+	\cal{P} = 
+	\begin{bmatrix}
+		\begin{smallmatrix}
+			0.9			& 0.1		 & 				&				 &			&			& \\
+			0.5			&  			 & 0.5		&				 &			&			& \\
+		 	& 			 & 				&	0.8		 &			&			& 0.2\\
+			& 		 	 & 				&				 & 0.6	&	0.4	& \\
+		 	& 		 	 & 				&				 &			&			& 1\\
+			& 0.2	 	 & 0.4		&	0.4		 & 			&			& \\
+		 	& 		 	 & 				&				 &			&			& 1\\
+		\end{smallmatrix}
+	\end{bmatrix}
+\end{align*}
+
+\begin{align*}
+	\cal{R} = 
+	\begin{bmatrix}
+		\begin{smallmatrix}
+			-1 \\
+			-2 \\
+			-2 \\
+			-2 \\
+			10 \\
+			1\\
+			0
+		\end{smallmatrix}
+	\end{bmatrix},
+\end{align*}
+
+$$\gamma \in [0,1] $$
+
+where we can use these params to calculate state value $v(s)$ using bellman equation
+\begin{align*}
+	v &= (I - \gamma P)^{-1}R \\
+		&= \left( 
+		\begin{bmatrix}
+			\begin{smallmatrix}
+			1&0&0&0&0&0&0\\
+			0&1&0&0&0&0&0\\
+			0&0&1&0&0&0&0\\
+			0&0&0&1&0&0&0\\
+			0&0&0&0&1&0&0\\
+			0&0&0&0&0&1&0\\
+			0&0&0&0&0&0&1
+			\end{smallmatrix}
+		\end{bmatrix}
+		- \gamma
+		\begin{bmatrix}
+			\begin{smallmatrix}
+				0.9			& 0.1		 & 				&				 &			&			& \\
+				0.5			&  			 & 0.5		&				 &			&			& \\
+		 		& 			 & 				&	0.8		 &			&			& 0.2\\
+				& 		 	 & 				&				 & 0.6	&	0.4	& \\
+		 		& 		 	 & 				&				 &			&			& 1\\
+				& 0.2	 	 & 0.4		&	0.4		 & 			&			& \\
+		 		& 		 	 & 				&				 &			&			& 1\\
+			\end{smallmatrix}
+		\end{bmatrix}
+		\right)^{-1}
+		\begin{bmatrix}
+			\begin{smallmatrix}
+			-1 \\
+			-2 \\
+			-2 \\
+			-2 \\
+			10 \\
+			1\\
+			0
+			\end{smallmatrix}
+		\end{bmatrix}
+\end{align*}
+
+The result state-value vector is stored in $s$, shown in \ref{fig:MRPres}
+
+\begin{figure}[H]
+	\begin{centering}
+		\includegraphics[width = \linewidth]{MRPexp.jpg}
+	\end{centering}
+	\caption{MRP results}
+	\label{fig:MRPres}
+\end{figure}
+
+\subsection{MDP Example}
+Introduce MDP example from the lecture.
+
+\begin{figure}[H]
+	\begin{centering}
+		\includegraphics[width = \linewidth]{MDPexp.jpg}
+	\end{centering}
+\end{figure}
+
+First, we can use state-value function to calculate the value of each state. Using 
+$$v_{\pi}(s) = \sum_{a \in A} \pi(a|s) (R_{s}^a + \gamma \sum_{s'\in S} P^{a}_{s s^{'}} v_{\pi}(s^{'}))$$
+
+since $\pi(a|s) = 0.5$, it means the decision is uniformly random. Also, the state value is initialized as zero-vector actually.
+for $v(1)$, $$v(1) = 0.5*(-1 + v(4)) + 0.5*(-2 + v(2))$$
+
+for $v(2)$, $$v(2) = 0.5*(-2 + v(3))$$
+
+for $v(3)$, $$v(3) = 0.5*(10 + 0) + 0.5*(1 + (0.2*v(1) + 0.4*v(2) + 0.4*v(3))) $$
+
+for $v(4)$, $$v(4) = 0.5*(-1 + v(4)) + 0.5*(0 + v(1))$$
+
+From these four equations, we can calculate four state values.
+
+\begin{align*}
+	\begin{bmatrix}
+			v1\\
+			v2\\
+			v3\\
+			v4
+	\end{bmatrix}
+	=
+	\begin{bmatrix}
+		-1.3 \\
+		2.7 \\
+		7.4 \\
+		-2.3 
+	\end{bmatrix}
+\end{align*}
+
+After we have got state value, we can use the same method to obtain the value of action.
 
 %----------------------------------------------------------------------------------------
 %	BIBLIOGRAPHY
 %----------------------------------------------------------------------------------------
 
-\printbibliography[title={Bibliography}] % Print the bibliography, section title in curly brackets
+\printbibliography[title={Reference}] % Print the bibliography, section title in curly brackets
 
 %----------------------------------------------------------------------------------------
 
